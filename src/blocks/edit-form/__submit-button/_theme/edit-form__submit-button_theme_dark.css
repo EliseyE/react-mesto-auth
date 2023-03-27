@@ -1,0 +1,8 @@
+.edit-form__submit-button_theme_dark {
+  background-color: rgba(255, 255, 255, 1);
+  color: #000;
+}
+
+.edit-form__submit-button_theme_dark:hover {
+  background-color: rgba(255, 255, 255, 0.85);
+}
