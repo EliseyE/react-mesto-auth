@@ -1,24 +1,29 @@
-import React from "react";
-import InfoLink from "./InfoLink";
-import InitialPageForm from "./InitialPageForm";
+import React, { useContext } from "react";
+import SingleMenu from "./SingleMenu";
+import EmailPassPageForm from "./EmailPassPageForm";
+import { LastResponseStatusContext } from "../contexts/LastResponseStatusContext";
 
+function Register({ onSubmit }) {
 
-function Register({onSubmit}) {
+  function handleSubmit(regData) {
+    onSubmit(regData);
+  };
 
   return(
-      <InitialPageForm
+    <>
+      <EmailPassPageForm
         name={'register'}
         title={'Регистрация'}
         sumbitButtonName={'Зарегистрироваться'}
-        onSubmit={onSubmit}
-      >
-        <InfoLink
-          text={'Уже зарегистрированы?'}
-          linkText={'Войти'}
-          infoLinkMod={'info-link_place_register'}
-          link={'/sign-in'}
-        />
-      </InitialPageForm>
+        onSubmit={handleSubmit}
+      />
+      <SingleMenu
+        text={'Уже зарегистрированы?'}
+        linkText={'Войти'}
+        singleMenuMod={'single-menu_place_register'}
+        link={'/sign-in'}
+      />
+    </>
   );
 }
 

@@ -1,10 +1,10 @@
 import React from "react";
-import InitialPageForm from "./InitialPageForm";
+import EmailPassPageForm from "./EmailPassPageForm";
 
 function Login({onSubmit}) {
 
   return(
-    <InitialPageForm
+    <EmailPassPageForm
       name={'login'}
       title={'Вход'}
       sumbitButtonName={'Войти'}

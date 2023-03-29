@@ -1,14 +1,15 @@
 import React from "react";
 import headerLogoPath from '../images/logos/header-logo.svg';
-import InfoLink from "./InfoLink";
+import SingleMenu from "./SingleMenu";
 
-function Header({text=''}) {
+function Header() {
   return(
   <header className="header page__header">
     <img src={headerLogoPath} alt="Место Россия" className="header__logo" />
-    <InfoLink
-      linkText={'Войти'}
-      infoLinkMod={'info-link_place_header'}
+    <SingleMenu
+      linkText={'Регистрация'}
+      singleMenuMod={'single-menu_place_header'}
+      link={'/sign-up'}
     />
   </header>
   );
