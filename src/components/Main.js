@@ -1,10 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Card from "./Card";
 
-function Main({cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onCardDelete}) {
+function Main({cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, onCardDelete, updateData}) {
 
   const currentUser = useContext(CurrentUserContext);
+
+  useEffect(() => {
+    updateData();
+  }, []);
 
   return(
     <main className="content page__content page__side-space">
@@ -26,7 +30,9 @@ function Main({cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCa
 
       <section className="collection" aria-label="Фотогалерея">
         <ul className="collection__item-list">
-          {cards.map((data) => (
+        {console.log(cards)}
+        {
+          cards.map((data) => (
             <Card key={data._id}
               card={data}
               onCardClick={onCardClick}

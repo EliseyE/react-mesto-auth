@@ -10,17 +10,19 @@ class Api {
   }
 
   _downloadData(path) {
+    const JWT = localStorage.getItem('JWT');
     return fetch(`${this._baseUrl}${path.path}`, {
-      headers: { authorization: this._headers.authorization }
+      headers: { authorization: `Bearer ${JWT}` }
     })
     .then(res => {return this._responceProcessing(res)})
   }
 
   _uploadData(path, data, method) {
+    const JWT = localStorage.getItem('JWT');
     return fetch(`${this._baseUrl}${path.path}`, {
       method: method,
       headers: {
-        authorization: this._headers.authorization,
+        authorization: `Bearer ${JWT}`,
         'Content-Type': this._headers['Content-Type']
       },
       body: JSON.stringify(data)

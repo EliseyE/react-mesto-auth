@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import SingleMenu from "./SingleMenu";
 import EmailPassPageForm from "./EmailPassPageForm";
-import { LastResponseStatusContext } from "../contexts/LastResponseStatusContext";
 
 function Register({ onSubmit }) {
 

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import '../index.css';
@@ -38,17 +38,7 @@ function App() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    apiModule.getMyProfileData()
-    .then(res => {
-      setCurrentUser(res);
-    })
-    .catch(err => console.log(err));
 
-    apiModule.getInitialCards()
-    .then(res => setCards(res))
-    .catch(err => console.log(err));
-  }, []);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -172,6 +162,60 @@ function App() {
     }
   };
 
+  async function handleAuthorize(resData) {
+    localStorage.setItem('JWT', resData.token);
+    setIsLoggedIn(true);
+  };
+
+  async function handleLogin(loginData) {
+    try {
+      const res = await authApi.authorize(loginData);
+      const resData = await res.json();
+      if(resData.token) {
+        handleAuthorize(resData);
+      }
+    } catch (err) {
+      console.log(err);
+      setLastResponseStatus({...lastResponseStatus, resStatus: err.ok, resStatusCode: err.status});
+      handleInfoTooltipPopupOpen();
+      }
+  };
+
+  async function tokenCheck () {
+    try {
+      let jwt = localStorage.getItem('JWT')
+        if(!jwt)
+          throw new Error('JWT is empty');
+        const res = await authApi.getContent(jwt);
+        const { data } = await res.json();
+        if(data) {
+          setCurrentUser({...currentUser, _id: data._id, email: data.email});
+          setIsLoggedIn(true);
+        }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  function updateData() {
+      if(isLoggedIn) {
+        apiModule.getMyProfileData()
+        .then(res => {
+          console.log('user', res.data);
+          setCurrentUser(res.data);
+        })
+        .catch(err => console.log(err));
+
+        apiModule.getInitialCards()
+          .then(res => setCards(res.data.slice().reverse()) )
+          .catch(err => console.log(err));
+      }
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
@@ -181,12 +225,13 @@ function App() {
           <Routes>
             <Route
               path='/sign-up'
-              element={isLoggedIn ? <Navigate to="/" replace /> : <Register
-              onSubmit={handleRegister}
-              resStatus={lastResponseStatus.resStatus}
+              element={isLoggedIn ? <Navigate to="/" replace /> :
+              <Register
+                onSubmit={handleRegister}
+                resStatus={lastResponseStatus.resStatus}
               />}
             />
-            <Route path='/sign-in' element={isLoggedIn ? <Navigate to="/" replace /> : <Login />} />
+            <Route path='/sign-in' element={isLoggedIn ? <Navigate to="/" replace /> : <Login onSubmit={handleLogin} />} />
             <Route path='/' element={
               <>
                 <ProtectedRoute
@@ -199,6 +244,7 @@ function App() {
                       onCardClick={handleCardClick}
                       onCardLike={handleCardLike}
                       onCardDelete={handleDeletePlaceClick}
+                      updateData={updateData}
                 />
                 <ProtectedRoute
                     isLoggedIn={isLoggedIn}
