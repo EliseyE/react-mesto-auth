@@ -12,7 +12,7 @@ function InitialPageForm({onSubmit, name, title, sumbitButtonName, children}) {
         onSubmit={onSubmit}
         formMod={'edit-form_theme_dark'}
         titleMod={'edit-form__title_place_page'}
-        sumbitButtonMod={'edit-form__submit-button_theme_dark'}
+        sumbitButtonMod={'button_place_initialpage-form button_theme_dark'}
       >
       {children}
       </EditForm>

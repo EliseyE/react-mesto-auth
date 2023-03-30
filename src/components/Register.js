@@ -1,6 +1,7 @@
 import React from "react";
 import SingleMenu from "./SingleMenu";
 import EmailPassPageForm from "./EmailPassPageForm";
+import SingleMenuLogIn from "./SingleMenuLogIn";
 
 function Register({ onSubmit }) {
 
@@ -16,12 +17,11 @@ function Register({ onSubmit }) {
         sumbitButtonName={'Зарегистрироваться'}
         onSubmit={handleSubmit}
       />
-      <SingleMenu
+      <SingleMenuLogIn
         text={'Уже зарегистрированы?'}
-        linkText={'Войти'}
         singleMenuMod={'single-menu_place_register'}
-        link={'/sign-in'}
       />
+
     </>
   );
 }

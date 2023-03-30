@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import '../index.css';
@@ -23,6 +23,7 @@ import * as authApi from "../utils/authApi";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -183,29 +184,34 @@ function App() {
 
   async function tokenCheck () {
     try {
-      let jwt = localStorage.getItem('JWT')
-        if(!jwt)
-          throw new Error('JWT is empty');
-        const res = await authApi.getContent(jwt);
-        const { data } = await res.json();
-        if(data) {
-          setCurrentUser({...currentUser, email: data.email});
-          setIsLoggedIn(true);
-        }
+      const jwt = localStorage.getItem('JWT');
+      if(!jwt)
+        throw new Error('JWT is empty');
+      const res = await authApi.getContent(jwt);
+      const { data } = await res.json();
+      if(data) {
+        setCurrentUser({...currentUser, email: data.email});
+        setIsLoggedIn(true);
+      }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false)
     }
   };
 
   useEffect(() => {
+    console.log(isLoggedIn);
     tokenCheck();
   }, []);
 
   function updateData() {
+    console.log(isLoggedIn);
       if(isLoggedIn) {
         apiModule.getMyProfileData()
         .then(res => {
-          setCurrentUser(res);
+          // const user = Object.assign(currentUser, res);
+          setCurrentUser({...currentUser, ...res});
         })
         .catch(err => console.log(err));
 
@@ -213,13 +219,24 @@ function App() {
           .then(res => setCards(res) )
           .catch(err => console.log(err));
       }
+  };
+
+  function LogOut() {
+    console.log(currentUser);
+
+    setIsLoggedIn(false);
+    localStorage.removeItem('JWT');
+  };
+
+  if (loading) {
+    return '...Loading';
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
         <LastResponseStatusContext.Provider value={lastResponseStatus.resStatus}>
-          <Header />
+          <Header onLogOut={LogOut} isLoggedIn={isLoggedIn}/>
 
           <Routes>
             <Route

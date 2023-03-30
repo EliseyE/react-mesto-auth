@@ -1,17 +1,53 @@
-import React from "react";
+import React, { useLayoutEffect, useEffect, useState } from "react";
+import { Routes, Route } from 'react-router-dom';
 import headerLogoPath from '../images/logos/header-logo.svg';
-import SingleMenu from "./SingleMenu";
+import SingleMenuLogIn from "./SingleMenuLogIn";
+import SingleMenuLogOut from "./SingleMenuLogOut";
+import SingleMenuRegister from "./SingleMenuRegister";
 
-function Header() {
+function Header({onLogOut, isLoggedIn}) {
+  const [isHeaderOptionOn, setIsHeaderOptionOn] = useState(false);
+
+  const headerSingleMunuStyle = 'single-menu_place_header';
+  const headerSingleMunuStyleLogout = `${headerSingleMunuStyle} single-menu_type_logout`;
+  function handleOption() {
+    setIsHeaderOptionOn(!isHeaderOptionOn);
+  };
+
+  useEffect(() => {
+    setIsHeaderOptionOn(false);
+  }, [isLoggedIn]);
+
   return(
-  <header className="header page__header">
-    <img src={headerLogoPath} alt="Место Россия" className="header__logo" />
-    <SingleMenu
-      linkText={'Регистрация'}
-      singleMenuMod={'single-menu_place_header'}
-      link={'/sign-up'}
-    />
-  </header>
+  <>
+    {isHeaderOptionOn && isLoggedIn &&
+      <SingleMenuLogOut
+        singleMenuMod={'single-menu_place_header-option'}
+        onClick={onLogOut}
+        textMod={'text_place_header-option'}
+
+      />}
+    <header className="header page__header">
+      <img src={headerLogoPath} alt="Место Россия" className="header__logo" />
+      {isLoggedIn &&
+        <SingleMenuLogOut
+          singleMenuMod={headerSingleMunuStyleLogout}
+          onClick={onLogOut}
+        />}
+      {isLoggedIn &&
+      <button
+        className={`button-img button-img_type_three-lines header__option-button ${isHeaderOptionOn ? 'button-img_type_x' : ''}`}
+        type="button"
+        onClick={handleOption}
+      /> }
+      {!isLoggedIn &&
+        <Routes>
+          <Route path='sign-up' element={<SingleMenuLogIn singleMenuMod={headerSingleMunuStyle}/>} />
+          <Route path='sign-in' element={<SingleMenuRegister singleMenuMod={headerSingleMunuStyle}/>} />
+        </Routes>
+      }
+    </header>
+  </>
   );
 };
 

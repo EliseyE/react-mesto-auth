@@ -1,4 +1,4 @@
-.edit-form__submit-button_disabled {
+.button_disabled {
   color: #000;
   border: 1px solid #000;
   background-color: rgb(246, 246, 246, 1);
@@ -6,6 +6,6 @@
   cursor: default;
 }
 
-.edit-form__submit-button_disabled:hover {
+.button_disabled:hover {
   background-color: rgb(246, 246, 246, 1);
 }

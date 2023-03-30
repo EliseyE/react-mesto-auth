@@ -1,0 +1,7 @@
+.button-img_type_x {
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  background-image: url('../../../images/edit-form__close-button.svg');
+  background-size: contain;
+}

@@ -5,5 +5,11 @@
   line-height: 22px;
   font-weight: 400;
   gap: 24px;
-  margin-bottom: 41px;
+}
+
+@media screen and (max-width: 650px) {
+  .single-menu_place_header {
+    font-size: 14px;
+    line-height: 17px;
+  }
 }

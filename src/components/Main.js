@@ -15,9 +15,9 @@ function Main({cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCa
       <section className="profile" aria-label="Профайл">
         <div className="profile__avatar" onClick={onEditAvatar}>
           <img
-          className="profile__avatar-image"
-          src={currentUser.avatar}
-          alt="Аватар профиля"
+            className="profile__avatar-image"
+            src={currentUser.avatar}
+            alt="Аватар профиля"
           />
         </div>
         <div className="profile__info">

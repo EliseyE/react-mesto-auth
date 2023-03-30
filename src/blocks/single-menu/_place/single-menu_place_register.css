@@ -7,3 +7,9 @@
   font-weight: 400;
   gap: 6px;
 }
+
+@media screen and (max-width: 700px) {
+  .single-menu_place_register {
+    margin-top: 20px;
+  }
+}

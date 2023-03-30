@@ -13,7 +13,7 @@ function EditForm({title, name, sumbitButtonName, children, onSubmit,
       <h2 className={`edit-form__title ${titleMod}`}>{title}</h2>
       {children}
       <button
-        className={`edit-form__submit-button edit-form__submit-button_type_${name}
+        className={`button edit-form__submit-button_type_${name}
         ${sumbitButtonMod}`}
         type="submit"
       >{sumbitButtonName}</button>
