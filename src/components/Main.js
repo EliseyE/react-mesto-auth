@@ -30,16 +30,15 @@ function Main({cards, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCa
 
       <section className="collection" aria-label="Фотогалерея">
         <ul className="collection__item-list">
-        {console.log(cards)}
         {
           cards.map((data) => (
-            <Card key={data._id}
+            <Card
+              key={data._id}
               card={data}
               onCardClick={onCardClick}
               onCardLike={onCardLike}
-              onCardDelete={onCardDelete}
-            />
-          ))}
+              onCardDelete={onCardDelete} />))
+        }
         </ul>
       </section>
     </main>

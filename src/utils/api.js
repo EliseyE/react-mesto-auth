@@ -1,6 +1,6 @@
 import {
-  apiHeaders,
-  apiBaseUrl
+  API_HEADERS,
+  API_BASE_URL
 }  from './constants.js';
 
 class Api {
@@ -10,20 +10,18 @@ class Api {
   }
 
   _downloadData(path) {
-    const JWT = localStorage.getItem('JWT');
     return fetch(`${this._baseUrl}${path.path}`, {
-      headers: { authorization: `Bearer ${JWT}` }
+      headers: { authorization: this._headers.authorization }
     })
     .then(res => {return this._responceProcessing(res)})
   }
 
   _uploadData(path, data, method) {
-    const JWT = localStorage.getItem('JWT');
     return fetch(`${this._baseUrl}${path.path}`, {
       method: method,
       headers: {
-        authorization: `Bearer ${JWT}`,
-        'Content-Type': this._headers['Content-Type']
+        authorization: this._headers.authorization,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     })
@@ -73,6 +71,6 @@ class Api {
   }
 };
 
-const apiModule = new Api(apiBaseUrl, apiHeaders);
+const apiModule = new Api(API_BASE_URL, API_HEADERS);
 
 export {apiModule};

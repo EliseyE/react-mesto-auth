@@ -189,7 +189,7 @@ function App() {
         const res = await authApi.getContent(jwt);
         const { data } = await res.json();
         if(data) {
-          setCurrentUser({...currentUser, _id: data._id, email: data.email});
+          setCurrentUser({...currentUser, email: data.email});
           setIsLoggedIn(true);
         }
     } catch (err) {
@@ -205,13 +205,12 @@ function App() {
       if(isLoggedIn) {
         apiModule.getMyProfileData()
         .then(res => {
-          console.log('user', res.data);
-          setCurrentUser(res.data);
+          setCurrentUser(res);
         })
         .catch(err => console.log(err));
 
         apiModule.getInitialCards()
-          .then(res => setCards(res.data.slice().reverse()) )
+          .then(res => setCards(res) )
           .catch(err => console.log(err));
       }
   }
