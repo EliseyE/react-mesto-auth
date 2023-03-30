@@ -18,12 +18,13 @@ import InfoTooltipPopup from './InfoTooltipPopup';
 import Login from './Login';
 import Register from './Register';
 import * as authApi from "../utils/authApi";
+import Spinner from './Spinner';
 
 
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -38,8 +39,6 @@ function App() {
   const [lastResponseStatus, setLastResponseStatus] = useState({resStatus: false, resStatusCode: 'blank'});
 
   const navigate = useNavigate();
-
-
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -169,6 +168,7 @@ function App() {
   };
 
   async function handleLogin(loginData) {
+    setLoading(true);
     try {
       const res = await authApi.authorize(loginData);
       const resData = await res.json();
@@ -179,6 +179,8 @@ function App() {
       console.log(err);
       setLastResponseStatus({...lastResponseStatus, resStatus: err.ok, resStatusCode: err.status});
       handleInfoTooltipPopupOpen();
+      } finally {
+        setLoading(false);
       }
   };
 
@@ -195,13 +197,10 @@ function App() {
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false)
     }
   };
 
   useEffect(() => {
-    console.log(isLoggedIn);
     tokenCheck();
   }, []);
 
@@ -210,7 +209,6 @@ function App() {
       if(isLoggedIn) {
         apiModule.getMyProfileData()
         .then(res => {
-          // const user = Object.assign(currentUser, res);
           setCurrentUser({...currentUser, ...res});
         })
         .catch(err => console.log(err));
@@ -228,16 +226,13 @@ function App() {
     localStorage.removeItem('JWT');
   };
 
-  if (loading) {
-    return '...Loading';
-  }
-
   return (
+
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
         <LastResponseStatusContext.Provider value={lastResponseStatus.resStatus}>
           <Header onLogOut={LogOut} isLoggedIn={isLoggedIn}/>
-
+          {loading && <Spinner />}
           <Routes>
             <Route
               path='/sign-up'

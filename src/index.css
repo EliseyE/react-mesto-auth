@@ -108,3 +108,6 @@
 @import url('./blocks/button-img/_type/button-img_type_three-lines.css');
 @import url('./blocks/button-img/_type/button-img_type_x.css');
 
+/* spinnder */
+@import url('./blocks/spinner/spinner.css');
+@import url('./blocks/spinner/spinner__wheel/spinner__wheel.css');
