@@ -2,6 +2,8 @@ import React from "react";
 
 function Popup({name, children, isOpen, onClose}) {
 
+  const classButton = `button-img button-img_type_x popup__close-button popup__close-button_type_${name}`;
+
   return(
     <section
       className={`popup popup_type_${name} ${isOpen ? 'popup_is-opened' : ''}`}
@@ -9,7 +11,7 @@ function Popup({name, children, isOpen, onClose}) {
     >
       <div className="popup__container" onMouseDown={e => e.stopPropagation()}>
         <button
-          className={`popup__close-button popup__close-button_type_${name}`}
+          className={ classButton }
           type="button"
           onClick={onClose}
         ></button>

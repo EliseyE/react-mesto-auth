@@ -5,6 +5,24 @@
 /* root */
 @import url('./blocks/root/root.css');
 
+/* text */
+@import url('./blocks/text/text.css');
+@import url('./blocks/text/_place/text_place_header-option.css');
+
+/* link */
+@import url('./blocks/link/link.css');
+
+/* button */
+@import url('./blocks/button/button.css');
+@import url('./blocks/button/_disabled/button_disabled.css');
+@import url('./blocks/button/_theme/button_theme_dark.css');
+@import url('./blocks/button/_place/button_place_initialpage-form.css');
+
+/* button-img */
+@import url('./blocks/button-img/button-img.css');
+@import url('./blocks/button-img/_type/button-img_type_three-lines.css');
+@import url('./blocks/button-img/_type/button-img_type_x.css');
+
 /* page */
 @import url('./blocks/page/page.css');
 @import url('./blocks/page/__content/page__content.css');
@@ -90,23 +108,7 @@
 @import url('./blocks/single-menu/_place/single-menu_place_header-option.css');
 @import url('./blocks/single-menu/_type/single-menu_type_logout.css');
 
-/* text */
-@import url('./blocks/text/text.css');
-@import url('./blocks/text/_place/text_place_header-option.css');
 
-/* link */
-@import url('./blocks/link/link.css');
-
-/* button */
-@import url('./blocks/button/button.css');
-@import url('./blocks/button/_disabled/button_disabled.css');
-@import url('./blocks/button/_theme/button_theme_dark.css');
-@import url('./blocks/button/_place/button_place_initialpage-form.css');
-
-/* button-img */
-@import url('./blocks/button-img/button-img.css');
-@import url('./blocks/button-img/_type/button-img_type_three-lines.css');
-@import url('./blocks/button-img/_type/button-img_type_x.css');
 
 /* spinnder */
 @import url('./blocks/spinner/spinner.css');
