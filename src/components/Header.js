@@ -5,11 +5,14 @@ import SingleMenuLogIn from "./SingleMenuLogIn";
 import SingleMenuLogOut from "./SingleMenuLogOut";
 import SingleMenuRegister from "./SingleMenuRegister";
 
-function Header({onLogOut, isLoggedIn}) {
+
+function Header({ onLogOut, isLoggedIn }) {
+
   const [isHeaderOptionOn, setIsHeaderOptionOn] = useState(false);
 
   const headerSingleMunuStyle = 'single-menu_place_header';
   const headerSingleMunuStyleLogout = `${headerSingleMunuStyle} single-menu_type_logout`;
+
   function handleOption() {
     setIsHeaderOptionOn(!isHeaderOptionOn);
   };
@@ -25,15 +28,14 @@ function Header({onLogOut, isLoggedIn}) {
         singleMenuMod={'single-menu_place_header-option'}
         onClick={onLogOut}
         textMod={'text_place_header-option'}
-
       />}
     <header className="header page__header">
       <Link to="/" ><img src={headerLogoPath} alt="Место Россия" className="header__logo" /></Link>
-      {isLoggedIn &&
-        <SingleMenuLogOut
+      {isLoggedIn &&<SingleMenuLogOut
           singleMenuMod={headerSingleMunuStyleLogout}
           onClick={onLogOut}
         />}
+
       {isLoggedIn &&
       <button
         className={`button-img button-img_type_three-lines header__option-button ${isHeaderOptionOn ? 'button-img_type_x' : ''}`}

@@ -2,10 +2,10 @@ import React from "react";
 import EmailPassPageForm from "./EmailPassPageForm";
 
 
-function Login({onSubmit}) {
+function Login({ logIn }) {
 
   function handleSubmit(loginData) {
-    onSubmit(loginData);
+    logIn(loginData);
   }
 
   return(

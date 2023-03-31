@@ -3,10 +3,10 @@ import SingleMenu from "./SingleMenu";
 import EmailPassPageForm from "./EmailPassPageForm";
 import SingleMenuLogIn from "./SingleMenuLogIn";
 
-function Register({ onSubmit }) {
+function Register({ onRegister }) {
 
   function handleSubmit(regData) {
-    onSubmit(regData);
+    onRegister(regData);
   };
 
   return(

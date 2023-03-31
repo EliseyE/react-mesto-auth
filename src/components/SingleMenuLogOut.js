@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import SingleMenu from "./SingleMenu";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function SingleMenuLogOut({text, link, linkText, singleMenuMod, textMod, linkMod, onClick }) {
+function SingleMenuLogOut({link, linkText, singleMenuMod, textMod, linkMod, onClick }) {
+
   const currentUser = useContext(CurrentUserContext);
 
   return(
       <SingleMenu
-        text={text || currentUser.email}
+        text={currentUser.email}
         link={link || ''}
         linkText={linkText || 'Выйти'}
         singleMenuMod={singleMenuMod || ''}

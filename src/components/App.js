@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import '../index.css';
@@ -27,9 +27,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const [currentUser, setCurrentUser] = useState({});
+  const [userEmail, setUserEmail] = useState('');
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -42,25 +44,31 @@ function App() {
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
+    setIsPopupOpen(true);
   };
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
+    setIsPopupOpen(true);
   };
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true);
+    setIsPopupOpen(true);
   };
 
   function handleDeletePlaceClick(card) {
     setIsConfirmDeletingCardPopupOpen({...isConfirmDeletingCardPopupOpen, isOpen: true, card: card});
+    setIsPopupOpen(true);
   };
 
   function handleInfoTooltipPopupOpen() {
     setIsInfoTooltipPopupOpen(true);
+    setIsPopupOpen(true);
   };
 
   function closeAllPopups() {
+    setIsPopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -102,18 +110,10 @@ function App() {
       }
     };
 
-    if(
-      isEditAvatarPopupOpen ||
-      isEditProfilePopupOpen ||
-      isAddPlacePopupOpen ||
-      isConfirmDeletingCardPopupOpen.isOpen ||
-      selectedCard.isOpen ||
-      isInfoTooltipPopupOpen
-      )
+    if(isPopupOpen)
       document.addEventListener('keydown', handleEscapeKey);
     return () => document.removeEventListener('keydown', handleEscapeKey);
-  }, [selectedCard, isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, isConfirmDeletingCardPopupOpen,
-    isInfoTooltipPopupOpen]);
+  }, [isPopupOpen]);
 
   function handleUpdateUser(userInfo) {
     setIsLoading(true);
@@ -148,7 +148,7 @@ function App() {
       .finally(() => setIsLoading(false));
   };
 
-  async function handleRegister(regData) {
+  const handleRegister = useCallback( async (regData) => {
     try {
       const res = await authApi.register(regData);
       setLastResponseStatus({...lastResponseStatus, resStatus: res.ok, resStatusCode: res.status});
@@ -160,14 +160,38 @@ function App() {
         handleInfoTooltipPopupOpen();
       }, 300);
     }
-  };
+  }, []);
 
-  async function handleAuthorize(resData) {
+  const tokenCheck = useCallback( async () => {
+    try {
+      const jwt = localStorage.getItem('JWT');
+      if(!jwt)
+        throw new Error('JWT is empty');
+      const res = await authApi.getContent(jwt);
+      const { data } = await res.json();
+      if(data) {
+        localStorage.setItem('email', data.email);
+        setIsLoggedIn(true);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  const handleAuthorize = useCallback( async (resData) => {
     localStorage.setItem('JWT', resData.token);
     setIsLoggedIn(true);
-  };
+    navigate('/', {replace: true});
+    tokenCheck();
+  }, [tokenCheck]);
 
-  async function handleLogin(loginData) {
+  const handleLogin = useCallback( async (loginData) => {
     setLoading(true);
     try {
       const res = await authApi.authorize(loginData);
@@ -182,68 +206,47 @@ function App() {
       } finally {
         setLoading(false);
       }
-  };
+  }, [handleAuthorize]);
 
-  async function tokenCheck () {
-    try {
-      const jwt = localStorage.getItem('JWT');
-      if(!jwt)
-        throw new Error('JWT is empty');
-      const res = await authApi.getContent(jwt);
-      const { data } = await res.json();
-      if(data) {
-        setCurrentUser({...currentUser, email: data.email});
-        setIsLoggedIn(true);
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const updateData = useCallback( () => {
 
-  useLayoutEffect(() => {
-    tokenCheck();
-  }, []);
-
-  function updateData() {
-      if(isLoggedIn) {
         apiModule.getMyProfileData()
         .then(res => {
-          setCurrentUser({...currentUser, ...res});
+          setCurrentUser({ ...res, email: localStorage.getItem('email') });
         })
         .catch(err => console.log(err));
 
         apiModule.getInitialCards()
           .then(res => setCards(res) )
           .catch(err => console.log(err));
-      }
-  };
+
+  }, [isLoggedIn, currentUser]);
 
   function LogOut() {
     setIsLoggedIn(false);
     localStorage.removeItem('JWT');
+    localStorage.removeItem('email');
   };
 
   if(loading)
     return <Spinner />;
 
-  return (
+    return (
 
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
         <LastResponseStatusContext.Provider value={lastResponseStatus.resStatus}>
-          <Header onLogOut={LogOut} isLoggedIn={isLoggedIn}/>
+          <Header onLogOut={LogOut} isLoggedIn={isLoggedIn} />
           <Routes>
             <Route
               path='/sign-up'
               element={isLoggedIn ? <Navigate to="/" replace /> :
               <Register
-                onSubmit={handleRegister}
+                onRegister={handleRegister}
                 resStatus={lastResponseStatus.resStatus}
               />}
             />
-            <Route path='/sign-in' element={isLoggedIn ? <Navigate to="/" replace /> : <Login onSubmit={handleLogin} />} />
+            <Route path='/sign-in' element={isLoggedIn ? <Navigate to="/" replace /> : <Login logIn={handleLogin} />} />
             <Route path='/' element={
               <>
                 <ProtectedRoute
