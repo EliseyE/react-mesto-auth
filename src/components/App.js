@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import '../index.css';
@@ -158,7 +158,7 @@ function App() {
     } finally {
       setTimeout(() => {
         handleInfoTooltipPopupOpen();
-      }, 200);
+      }, 300);
     }
   };
 
@@ -205,7 +205,6 @@ function App() {
   }, []);
 
   function updateData() {
-    console.log(isLoggedIn);
       if(isLoggedIn) {
         apiModule.getMyProfileData()
         .then(res => {
@@ -220,8 +219,6 @@ function App() {
   };
 
   function LogOut() {
-    console.log(currentUser);
-
     setIsLoggedIn(false);
     localStorage.removeItem('JWT');
   };
@@ -263,7 +260,7 @@ function App() {
                 />
               </>}
             />
-            <Route path="*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />} />
+            <Route path="/*" element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />} />
           </Routes>
 
           <EditProfilePopup

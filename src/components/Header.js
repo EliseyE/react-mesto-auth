@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useEffect, useState } from "react";
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Link } from 'react-router-dom';
 import headerLogoPath from '../images/logos/header-logo.svg';
 import SingleMenuLogIn from "./SingleMenuLogIn";
 import SingleMenuLogOut from "./SingleMenuLogOut";
@@ -28,7 +28,7 @@ function Header({onLogOut, isLoggedIn}) {
 
       />}
     <header className="header page__header">
-      <img src={headerLogoPath} alt="Место Россия" className="header__logo" />
+      <Link to="/" ><img src={headerLogoPath} alt="Место Россия" className="header__logo" /></Link>
       {isLoggedIn &&
         <SingleMenuLogOut
           singleMenuMod={headerSingleMunuStyleLogout}
