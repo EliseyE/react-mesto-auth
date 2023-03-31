@@ -20,7 +20,7 @@ function Header({onLogOut, isLoggedIn}) {
 
   return(
   <>
-    {isHeaderOptionOn && isLoggedIn &&
+    {(isHeaderOptionOn && isLoggedIn) &&
       <SingleMenuLogOut
         singleMenuMod={'single-menu_place_header-option'}
         onClick={onLogOut}

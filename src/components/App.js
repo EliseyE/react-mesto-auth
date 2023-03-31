@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import '../index.css';
@@ -24,7 +24,7 @@ import Spinner from './Spinner';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
@@ -197,10 +197,12 @@ function App() {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     tokenCheck();
   }, []);
 
@@ -223,13 +225,15 @@ function App() {
     localStorage.removeItem('JWT');
   };
 
+  if(loading)
+    return <Spinner />;
+
   return (
 
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
         <LastResponseStatusContext.Provider value={lastResponseStatus.resStatus}>
           <Header onLogOut={LogOut} isLoggedIn={isLoggedIn}/>
-          {loading && <Spinner />}
           <Routes>
             <Route
               path='/sign-up'
