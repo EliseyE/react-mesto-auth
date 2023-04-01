@@ -27,7 +27,6 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   const [currentUser, setCurrentUser] = useState({});
-  const [userEmail, setUserEmail] = useState('');
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -167,10 +166,8 @@ function App() {
       const jwt = localStorage.getItem('JWT');
       if(!jwt)
         throw new Error('JWT is empty');
-      const res = await authApi.getContent(jwt);
-      const { data } = await res.json();
-      if(data) {
-        localStorage.setItem('email', data.email);
+      const resData = await authApi.getContent(jwt);
+      if(resData) {
         setIsLoggedIn(true);
       }
     } catch (err) {
@@ -194,8 +191,7 @@ function App() {
   const handleLogin = useCallback( async (loginData) => {
     setLoading(true);
     try {
-      const res = await authApi.authorize(loginData);
-      const resData = await res.json();
+      const resData = await authApi.authorize(loginData);
       if(resData.token) {
         handleAuthorize(resData);
       }
@@ -212,7 +208,8 @@ function App() {
 
         apiModule.getMyProfileData()
         .then(res => {
-          setCurrentUser({ ...res, email: localStorage.getItem('email') });
+          setCurrentUser(res);
+          console.log(currentUser);
         })
         .catch(err => console.log(err));
 
@@ -225,7 +222,6 @@ function App() {
   function LogOut() {
     setIsLoggedIn(false);
     localStorage.removeItem('JWT');
-    localStorage.removeItem('email');
   };
 
   if(loading)

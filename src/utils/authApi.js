@@ -25,15 +25,16 @@ async function makeRequset(url, method, data, token) {
 
   try {
     const res = await fetch(`${BASE_URL}${url}`, config);
-    const resres = responceProcessing(res);
-    return resres;
+    const checkedRes = responceProcessing(res);
+    const resData = await checkedRes.json();
+    return resData;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 
 };
 
- export const register = (data) => {
+export const register = (data) => {
   return makeRequset('/signup', 'POST', data, undefined);
 };
 
@@ -44,41 +45,3 @@ export const authorize = (data) => {
 export const getContent = (token) => {
   return makeRequset('/users/me', 'GET', undefined, token);
 };
-
-
-
-// first version of authApi
-// export const register = (data) => {
-//   return fetch(`${BASE_URL}/signup`, {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(data)
-//   })
-//   .then(res => { return responceProcessing(res) })
-// };
-
-
-// export const authorize = (data) => {
-//   return fetch(`${BASE_URL}/signin`, {
-//     method: 'POST',
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(data)
-//   })
-//   .then(res => { return responceProcessing(res) })
-// };
-
-
-// export const getContent = (token) => {
-//   return fetch(`${BASE_URL}/users/me`, {
-//     method: 'GET',
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization" : `Bearer ${token}`
-//     }
-//   })
-//   .then(res => { return responceProcessing(res) })
-// };
