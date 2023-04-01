@@ -1,8 +1,8 @@
 import React from "react";
 
-function Popup({name, children, isOpen, onClose}) {
+function Popup({ name, children, isOpen, onClose }) {
 
-  const classButton = `button-img button-img_type_x popup__close-button popup__close-button_type_${name}`;
+  const classButtonClass = `button-img button-img_type_x popup__close-button popup__close-button_type_${name}`;
 
   return(
     <section
@@ -11,7 +11,7 @@ function Popup({name, children, isOpen, onClose}) {
     >
       <div className="popup__container" onMouseDown={e => e.stopPropagation()}>
         <button
-          className={ classButton }
+          className={classButtonClass}
           type="button"
           onClick={onClose}
         ></button>
