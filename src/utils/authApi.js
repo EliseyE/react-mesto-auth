@@ -1,9 +1,12 @@
 import { BASE_URL } from "./constants";
 
-function responceProcessing(res) {
+async function responceProcessing(res) {
+  const resData = await res.json();
+
   if(res.ok)
-    return res;
-  return Promise.reject(res);
+    return {resValues: res, resData: resData};
+
+  return Promise.reject({resValues: res, resData: resData});
 };
 
 async function makeRequset(url, method, data, token) {
@@ -25,8 +28,7 @@ async function makeRequset(url, method, data, token) {
 
   try {
     const res = await fetch(`${BASE_URL}${url}`, config);
-    const checkedRes = responceProcessing(res);
-    const resData = await checkedRes.json();
+    const resData = responceProcessing(res);
     return resData;
   } catch (err) {
     return err;

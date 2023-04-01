@@ -38,7 +38,7 @@ function App() {
   const [isConfirmDeletingCardPopupOpen, setIsConfirmDeletingCardPopupOpen] = useState({isOpen: false, card: {}});
   const [selectedCard, setSelectedCard] = useState({isOpen: false, card: {}});
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
-  const [lastResponseStatus, setLastResponseStatus] = useState({resStatus: false, resStatusCode: 'blank'});
+  const [lastResponseStatus, setLastResponseStatus] = useState({resStatus: false, resStatusCode: 'blank', resText: 'Нет данных результата ответа сервера'});
 
   const navigate = useNavigate();
 
@@ -148,13 +148,16 @@ function App() {
       .finally(() => setIsLoading(false));
   };
 
+// API AUTH
+
+  // REGISTER
   const handleRegister = useCallback( async (regData) => {
     try {
       const res = await authApi.register(regData);
-      setLastResponseStatus({...lastResponseStatus, resStatus: res.ok, resStatusCode: res.status});
+      setLastResponseStatus({...lastResponseStatus, resStatus: res.resValues.ok, resStatusCode: res.resValues.status, resText: 'Вы успешно зарегистрировались!'});
       navigate('/sign-in', { replace: true });
     } catch (err) {
-      setLastResponseStatus({...lastResponseStatus, resStatus: err.ok, resStatusCode: err.status});
+      setLastResponseStatus({...lastResponseStatus, resStatus: err.resValues.ok, resStatusCode: err.resValues.status, resText: err.resData.error});
     } finally {
       setTimeout(() => {
         handleInfoTooltipPopupOpen();
@@ -162,16 +165,15 @@ function App() {
     }
   }, []);
 
+  //CHECH TOKEN
   const tokenCheck = useCallback( async () => {
     try {
-      const jwt = localStorage.getItem('JWT');
-      if(!jwt)
+      const JWT = localStorage.getItem('JWT');
+      if(!JWT)
         throw new Error('JWT is empty');
-      const resData = await authApi.getContent(jwt);
-      if(resData) {
-        setCurrentUser({ ...currentUser, email: resData.data.email });
-        console.log(resData.data.email);
-        setUserEmail(resData.data.email);
+      const res = await authApi.getContent(JWT);
+      if(res) {
+        setUserEmail(res.resData.data.email);
         setIsLoggedIn(true);
       }
     } catch (err) {
@@ -185,29 +187,31 @@ function App() {
     tokenCheck();
   }, []);
 
-  const handleAuthorize = useCallback( async (resData) => {
-    localStorage.setItem('JWT', resData.token);
+  // AUTHORIZE
+  const handleAuthorize = useCallback( async (token) => {
+    localStorage.setItem('JWT', token);
     setIsLoggedIn(true);
     navigate('/', {replace: true});
     tokenCheck();
   }, [tokenCheck]);
 
+  // LOGIN
   const handleLogin = useCallback( async (loginData) => {
     setLoading(true);
     try {
-      const resData = await authApi.authorize(loginData);
-      if(resData.token) {
-        handleAuthorize(resData);
+      const res = await authApi.authorize(loginData);
+      if(res.resData.token) {
+        handleAuthorize(res.resData.token);
       }
     } catch (err) {
-      console.log(err);
-      setLastResponseStatus({...lastResponseStatus, resStatus: err.ok, resStatusCode: err.status});
+      setLastResponseStatus({...lastResponseStatus, resStatus: err.resValues.ok, resStatusCode: err.resValues.status, resText: err.resData.message});
       handleInfoTooltipPopupOpen();
       } finally {
         setLoading(false);
       }
   }, [handleAuthorize]);
 
+  // UPDATE CONTENT: USER, CARDS
   const updateData = useCallback( () => {
 
         apiModule.getMyProfileData()
@@ -222,13 +226,12 @@ function App() {
 
   }, [isLoggedIn, currentUser]);
 
-
   function LogOut() {
-    console.log(currentUser);
     setIsLoggedIn(false);
     localStorage.removeItem('JWT');
   };
 
+  // LOADING SPINNER
   if(loading)
     return <Spinner />;
 
@@ -305,6 +308,7 @@ function App() {
           <InfoTooltipPopup
             isOpen={isInfoTooltipPopupOpen}
             onClose={closeAllPopups}
+            res={lastResponseStatus}
           />
         </LastResponseStatusContext.Provider>
       </IsLoadingContext.Provider>
