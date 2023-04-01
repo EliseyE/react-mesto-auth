@@ -6,7 +6,7 @@ import SingleMenuLogOut from "./SingleMenuLogOut";
 import SingleMenuRegister from "./SingleMenuRegister";
 
 
-function Header({ onLogOut, isLoggedIn }) {
+function Header({ onLogOut, isLoggedIn, userEmail }) {
 
   const [isHeaderOptionOn, setIsHeaderOptionOn] = useState(false);
 
@@ -28,20 +28,22 @@ function Header({ onLogOut, isLoggedIn }) {
         singleMenuMod={'single-menu_place_header-option'}
         onClick={onLogOut}
         textMod={'text_place_header-option'}
+        text={userEmail}
       />}
     <header className="header page__header">
       <Link to="/" ><img src={headerLogoPath} alt="Место Россия" className="header__logo" /></Link>
-      {isLoggedIn &&<SingleMenuLogOut
-          singleMenuMod={headerSingleMunuStyleLogout}
-          onClick={onLogOut}
-        />}
+        {isLoggedIn &&<SingleMenuLogOut
+            singleMenuMod={headerSingleMunuStyleLogout}
+            onClick={onLogOut}
+            text={userEmail}
+          />}
 
       {isLoggedIn &&
-      <button
-        className={`button-img button-img_type_three-lines header__option-button ${isHeaderOptionOn ? 'button-img_type_x' : ''}`}
-        type="button"
-        onClick={handleOption}
-      /> }
+        <button
+          className={`button-img button-img_type_three-lines header__option-button ${isHeaderOptionOn ? 'button-img_type_x' : ''}`}
+          type="button"
+          onClick={handleOption}
+        /> }
       {!isLoggedIn &&
         <Routes>
           <Route path='sign-up' element={<SingleMenuLogIn singleMenuMod={headerSingleMunuStyle}/>} />

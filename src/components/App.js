@@ -26,7 +26,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({name: '', about: '', avatar: '', _id: '', cohort: ''});
+  const [userEmail, setUserEmail] = useState('');
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -168,6 +169,9 @@ function App() {
         throw new Error('JWT is empty');
       const resData = await authApi.getContent(jwt);
       if(resData) {
+        setCurrentUser({ ...currentUser, email: resData.data.email });
+        console.log(resData.data.email);
+        setUserEmail(resData.data.email);
         setIsLoggedIn(true);
       }
     } catch (err) {
@@ -208,8 +212,7 @@ function App() {
 
         apiModule.getMyProfileData()
         .then(res => {
-          setCurrentUser(res);
-          console.log(currentUser);
+          setCurrentUser({ ...currentUser, ...res });
         })
         .catch(err => console.log(err));
 
@@ -219,7 +222,9 @@ function App() {
 
   }, [isLoggedIn, currentUser]);
 
+
   function LogOut() {
+    console.log(currentUser);
     setIsLoggedIn(false);
     localStorage.removeItem('JWT');
   };
@@ -232,7 +237,7 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <IsLoadingContext.Provider value={isLoading}>
         <LastResponseStatusContext.Provider value={lastResponseStatus.resStatus}>
-          <Header onLogOut={LogOut} isLoggedIn={isLoggedIn} />
+          <Header onLogOut={LogOut} isLoggedIn={isLoggedIn} userEmail={userEmail}/>
           <Routes>
             <Route
               path='/sign-up'

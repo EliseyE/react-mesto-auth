@@ -1,20 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import SingleMenu from "./SingleMenu";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function SingleMenuLogOut({link, linkText, singleMenuMod, textMod, linkMod, onClick }) {
-
-  const currentUser = useContext(CurrentUserContext);
-
-  const [email, setEmail] = useState();
-
-  useEffect(() => {
-    setEmail(currentUser.email);
-  }, [currentUser]);
+function SingleMenuLogOut({text, link, linkText, singleMenuMod, textMod, linkMod, onClick }) {
 
   return(
       <SingleMenu
-        text={email}
+        text={text || ''}
         link={link || ''}
         linkText={linkText || 'Выйти'}
         singleMenuMod={singleMenuMod || ''}
