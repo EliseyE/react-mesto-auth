@@ -205,7 +205,9 @@ function App() {
       }
     } catch (err) {
       setLastResponseStatus({...lastResponseStatus, resStatus: err.resValues.ok, resStatusCode: err.resValues.status, resText: err.resData.message});
-      handleInfoTooltipPopupOpen();
+      setTimeout(() => {
+        handleInfoTooltipPopupOpen();
+      }, 300);
       } finally {
         setLoading(false);
       }
