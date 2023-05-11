@@ -20,6 +20,9 @@ import Register from './Register';
 import * as authApi from "../utils/authApi";
 import Spinner from './Spinner';
 
+import registerIsOk from '../images/infoTooltipPopup__image-ok.svg';
+import registerIsFail from '../images/infoTooltipPopup__image-fail.svg';
+
 
 
 function App() {
@@ -39,6 +42,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({isOpen: false, card: {}});
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
   const [lastResponseStatus, setLastResponseStatus] = useState({resStatus: false, resStatusCode: 'blank', resText: 'Нет данных результата ответа сервера'});
+  const [InfoTooltipPopupImage, setInfoTooltipPopupImage] = useState('');
 
   const navigate = useNavigate();
 
@@ -62,8 +66,18 @@ function App() {
     setIsPopupOpen(true);
   };
 
+  function handleInfoTooltipPopupImage() {
+    setInfoTooltipPopupImage(lastResponseStatus.resStatus  ? registerIsOk : registerIsFail)
+  }
+
   function handleInfoTooltipPopupOpen() {
+    console.log(lastResponseStatus);
+
+    handleInfoTooltipPopupImage();
+    console.log(InfoTooltipPopupImage);
     setIsInfoTooltipPopupOpen(true);
+    console.log(InfoTooltipPopupImage);
+
     setIsPopupOpen(true);
   };
 
@@ -155,15 +169,17 @@ function App() {
     try {
       const res = await authApi.register(regData);
       setLastResponseStatus({...lastResponseStatus, resStatus: res.resValues.ok, resStatusCode: res.resValues.status, resText: 'Вы успешно зарегистрировались!'});
+      setInfoTooltipPopupImage(lastResponseStatus.resStatus  ? registerIsOk : registerIsFail)
       navigate('/sign-in', { replace: true });
     } catch (err) {
       setLastResponseStatus({...lastResponseStatus, resStatus: err.resValues.ok, resStatusCode: err.resValues.status, resText: err.resData.error});
+      setInfoTooltipPopupImage(lastResponseStatus.resStatus  ? registerIsOk : registerIsFail)
     } finally {
       setTimeout(() => {
         handleInfoTooltipPopupOpen();
       }, 300);
     }
-  }, []);
+  }, [lastResponseStatus]);
 
   //CHECH TOKEN
   const tokenCheck = useCallback( async () => {
@@ -312,6 +328,7 @@ function App() {
             isOpen={isInfoTooltipPopupOpen}
             onClose={closeAllPopups}
             res={lastResponseStatus}
+            image={InfoTooltipPopupImage}
           />
         </LastResponseStatusContext.Provider>
       </IsLoadingContext.Provider>

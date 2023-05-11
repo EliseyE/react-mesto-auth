@@ -1,15 +1,13 @@
 import React from "react";
 import Popup from "./Popup";
-import registerIsOk from '../images/infoTooltipPopup__image-ok.svg';
-import registerIsFail from '../images/infoTooltipPopup__image-fail.svg';
 
-function InfoTooltipPopup({isOpen, onClose, res}) {
+function InfoTooltipPopup({isOpen, onClose, res, image}) {
 
   return(
     <Popup name={'infoTooltip'} isOpen={isOpen} onClose={onClose}>
       <div className="infoTooltip">
         <img
-          src={res.resStatus ? registerIsOk : registerIsFail}
+          src={image}
           alt=""
           className="infoTooltip__image infoTooltip__image_size_normal"
         />
